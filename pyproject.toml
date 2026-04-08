@@ -1,0 +1,15 @@
+[project]
+name = "hutch-notify"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi",
+  "uvicorn[standard]",
+  "sqlalchemy>=2.0",
+  "aiosqlite",
+  "alembic",
+  "httpx[http2]",
+  "pyjwt[crypto]",
+  "pydantic-settings",
+  "apscheduler",
+]
