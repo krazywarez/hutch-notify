@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=hutch
 Group=hutch
-WorkingDirectory=/opt/hutch-notify
+WorkingDirectory=/opt/hutch-notify/app
 EnvironmentFile=/opt/hutch-notify/.env
 ExecStart=/opt/hutch-notify/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
 Restart=always
