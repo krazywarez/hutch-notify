@@ -1,0 +1,45 @@
+┌──────────────────────────────────────────────────────────────┐
+│  H U T C H - N O T I F Y                   [ KRZ ]   krz.sh  │
+└──────────────────────────────────────────────────────────────┘
+
+WHAT
+  backend for push notifications in hutch.
+
+DOES
+  - register apns device tokens
+  - store notification subscriptions
+  - poll sr.ht for changes
+  - send pushes via apns
+
+STACK
+  python (fastapi), sqlite, apns (http/2, token auth).
+
+STATUS
+  early development. current scope: device registration and a test
+  push endpoint. planned: build, ticket, and inbox notifications.
+
+RUN
+      python3.12 -m venv .venv
+      source .venv/bin/activate
+      pip install -r requirements.txt
+      uvicorn app.main:app --reload
+
+ENV
+  create .env:
+
+      API_KEY=change-me
+      DATABASE_URL=sqlite+aiosqlite:///./hutch_notify.db
+      APNS_KEY_ID=
+      APNS_TEAM_ID=
+      APNS_BUNDLE_ID=
+      APNS_PRIVATE_KEY_PATH=
+      SRHT_TOKEN=
+
+NOTES
+  - the ios app registers with apns and sends its token here.
+  - keep the apns .p8 key secure.
+  - event-driven eventually; the first version polls.
+
+┌──────────────────────────────────────────────────────────────┐
+│  krz.sh                                                      │
+└──────────────────────────────────────────────────────────────┘
