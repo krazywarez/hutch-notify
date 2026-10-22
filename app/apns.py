@@ -2,12 +2,20 @@ from __future__ import annotations
 
 import json
 import time
+from dataclasses import dataclass
 from pathlib import Path
 
 import httpx
 import jwt
 
 from app.config import settings
+
+
+@dataclass(frozen=True)
+class APNSTarget:
+    device_token: str
+    apns_env: str
+    topic: str
 
 
 class APNSClient:
@@ -35,16 +43,14 @@ class APNSClient:
 
     async def send_alert(
         self,
+        target: APNSTarget,
         *,
-        device_token: str,
-        apns_env: str,
-        topic: str,
         title: str,
         body: str,
         payload: dict,
     ) -> tuple[bool, str | None, str | None]:
-        host = "https://api.push.apple.com" if apns_env == "production" else "https://api.sandbox.push.apple.com"
-        url = f"{host}/3/device/{device_token}"
+        host = "https://api.push.apple.com" if target.apns_env == "production" else "https://api.sandbox.push.apple.com"
+        url = f"{host}/3/device/{target.device_token}"
         merged_payload = {
             "aps": {
                 "alert": {"title": title, "body": body},
@@ -56,7 +62,7 @@ class APNSClient:
             url,
             headers={
                 "authorization": f"bearer {self._bearer_token()}",
-                "apns-topic": topic,
+                "apns-topic": target.topic,
                 "apns-push-type": "alert",
                 "apns-priority": "10",
             },

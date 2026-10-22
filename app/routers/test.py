@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.apns import APNSClient
+from app.apns import APNSClient, APNSTarget
 from app.db import get_db
 from app.models import Device
 from app.security import require_api_key
@@ -20,9 +20,7 @@ async def test_push(device_id: int, db: AsyncSession = Depends(get_db)) -> dict:
     client = APNSClient()
     try:
         ok, apns_id, error = await client.send_alert(
-            device_token=device.apns_token,
-            apns_env=device.apns_env,
-            topic=device.bundle_id,
+            APNSTarget(device.apns_token, device.apns_env, device.bundle_id),
             title="Hutch test",
             body="Test push from hutch-notify",
             payload={"event_type": "test", "deep_link": "hutch://home"},
